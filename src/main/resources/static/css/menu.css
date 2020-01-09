@@ -1,0 +1,162 @@
+@charset "UTF-8";
+ html, body{ margin:0; height:100%;width:100%;padding:0;z-index:7; }
+
+.background{
+     height: 100%;
+     width: 100%;
+     background-size: 100%;
+     background-position: top left;
+     background-position: 0px 0px;
+     background-position: 100% 100%;
+ }
+.search{
+	background-color: #23262E;
+	padding-top:7px;
+	width:250px;
+}
+.distance{
+	padding-left: 15px !important;
+}
+
+.content{
+	margin-left: 10px !important;
+}
+
+.mycss{
+          background-color:#2F4056 !important;
+          color: white;
+          font-size: 20px;
+          padding: 0px 0px 0px 0px;
+          max-width:300px !important;
+          border-radius:10px !important;
+          }
+
+.lineStyleWidth{
+	width: 100%;  /*也可以是固定值、min-width这些*/
+	white-space: nowrap;  /*强制文本不能换行*/
+	overflow: hidden !important;  /*隐藏溢出内容*/
+	text-overflow: ellipsis;
+} 
+.lineStyle{
+	white-space: nowrap;  /*强制文本不能换行*/
+	overflow: hidden !important;  /*隐藏溢出内容*/
+	text-overflow: ellipsis;
+}  
+
+.lineStyleText{
+	width: calc(100% + 15px) !important;
+	margin-right: -15px !important; 
+}  
+
+/* 防止下拉框的下拉列表被隐藏---必须设置---       */  
+.layui-table-cell {            overflow: visible !important;        } 
+/* 使得下拉框与单元格刚好合适 */       
+td .layui-form-select{
+	margin-top: -10px;
+	margin-left: -15px;
+	margin-right: -15px;
+} 
+
+.overflow-hidden{
+	overflow-x:hidden !important;
+    overflow-y:hidden !important;
+}
+.overflow-auto{
+	overflow-x:auto !important;
+    overflow-y:auto !important;
+}
+
+.layer-body-my{
+	height:calc(100% - 60px) !important;
+	padding:0 0 0 0  !important;
+	margin:-0 0 0 0 !important;
+}
+
+.myStyle-body{
+     height:100% !important;
+     padding:0 0 0 0  !important;
+	 margin:0 0 0 0 !important;
+	/* margin-bottom:50px;
+	padding-bottom:50px 
+	background: yellow;*/
+}
+
+.mystyle-title{
+	margin:0;
+    padding:0;
+    height:40px !important;
+    z-index:10;
+}
+
+
+.mystyle-content{ 
+	height:calc(100% - 41px) !important;
+	padding:0 0 0 0  !important;
+	margin:0 0 0 0 !important;
+	z-index:8;
+}
+
+.layui-tab-item{
+	height:100% !important;
+}
+
+.interface-head{
+	height:48px;
+	width:calc(100% - 240px);
+	z-index:10;
+	margin:0 0 0 0;
+	padding:0 0 0 0 ;
+	position: fixed;
+    top: 100px;
+    left: 210px; 
+    background: white;
+    z-index:9;
+}
+
+.interface-head-content{
+	margin:6px 0 0 0 ;
+	padding:0;
+}
+
+.interface-content{
+	height: 100% !important;
+	
+}
+
+.interface-body{
+	height: calc(100% - 60px); !important;
+	z-index:9;
+	padding:50px 10px 0 10px !important;
+	margin: 0 0 10px 0 !important;
+}
+
+.setting-body{
+	height: calc(100% - 64px) !important;
+	z-index:9;
+	padding:20px 10px 0 10px !important;
+	margin: 0 0 70px 0 !important;
+}
+
+.save-form{
+	float: right;
+	margin-top:7px;
+	width: 70px;
+}
+
+.my-lable-form{
+	width: 180px !important;
+}
+
+.my-input-block{
+	margin-left: 180px !important;
+}
+
+/* json数据样式 
+pre {outline: 1px solid #ccc; }
+*/
+
+ .string { color: green; }
+ .number { color: darkorange; }
+ .boolean { color: blue; }
+ .null { color: magenta; }
+ .key { color: red; }

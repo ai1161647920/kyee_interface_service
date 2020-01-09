@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>京颐接口服务</title>
+<link rel="stylesheet" href="/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="/layui/css/soulTable.css">
+<link rel="stylesheet" href="/css/menu.css">
+
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout layui-layout-admin">
+		<div class="layui-header">
+			<a class="layui-logo" href="/"> <img
+				src="/img/logo/kyee_group_logo.png" alt="layui">
+			</a>
+			<!-- 头部区域（可配合layui已有的水平导航） -->
+
+			<ul class="layui-nav layui-layout-right">
+			      
+				<!-- <li class="search"><input type="text" name="title" required
+					lay-verify="required" placeholder="搜索相关方法" autocomplete="off"
+					class="layui-input"></li> -->
+				  <li class="layui-nav-item">
+				    <a href="javascript:;">应用参数设置</a>
+				    
+				    <dl class="layui-nav-child" th:if = "${kyApp.size()} > 0">
+				      <dd  th:each="kyApps : ${kyApp}"><a th:href="'javascript:appSetting(\''+${kyApps.appName}+'\','+${kyApps.appId}+')'" th:id="appSetting+${kyApps.appId}" th:text="${kyApps.appName}"></a></dd>
+				    </dl>
+				    <dl class="layui-nav-child" th:if = "${kyApp.size()} == 0">
+				      <dd><a>暂无可设置应用</a></dd>
+				    </dl>
+				  </li>
+			</ul> 
+		</div>
+
+		<div class="layui-side layui-bg-black">
+			<div class="layui-side-scroll">
+				<!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+				<ul class="layui-nav layui-nav-tree layui-inline" lay-filter="demo" th:if = "${kyApp.size()} > 0">
+					<!-- <tr th:each="prod : ${prods}">
+      <td th:text="${prod.name}">Onions</td>
+      <td th:text="${prod.price}">2.41</td>
+      <td th:text="${prod.inStock}? #{true} : #{false}">yes</td>
+    </tr> -->
+					<li class="layui-nav-item layui-nav-itemed"
+						th:each="kyApps : ${kyApp}"><a th:id="menu+${kyApps.appId}"
+						class="getElement" href="javascript:;" th:text="${kyApps.appName}"></a>
+						<span th:id="hidmenu+${kyApps.appId}"
+						th:text="${kyApps.appDescription}" hidden></span>
+						<dl class="layui-nav-child distance" th:if = "${kymethod.size()} > 0">
+
+							<dd th:each="kymethods : ${kymethod}"
+								th:if="${kymethods.appId}==${kyApps.appId}">
+								<a th:id="menu+${kyApps.appId}+${kymethods.id}"
+									th:href="'javascript:tabChange(\''+${kymethods.nameCn}+'\','+${kyApps.appId}+','+${kymethods.id}+')'" class="getElement"
+									th:text="${kymethods.nameCn}" ></a>
+<!-- th:οnclick="|tabChange('${kymethods.nameCn}','${kyApps.appId}','${kymethods.id}')|"-->
+								<span th:id="hidmenu+${kyApps.appId}+${kymethods.id}"
+									th:text="${kymethods.description}" hidden></span>
+							</dd>
+						</dl></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="layui-body content overflow-hidden  layer-body-my">
+			<!-- 内容主体区域 -->
+			<div class="layui-tab overflow-hidden myStyle-body" lay-filter="functionOperation" lay-allowclose="true">
+			  <ul class="layui-tab-title mystyle-title">
+			    <li class="layui-this" lay-id="11">网站设置</li>
+			  </ul>
+  
+			  <div class="layui-tab-content overflow-hidden mystyle-content" >
+			    <div class="layui-tab-item layui-show ">
+			    
+			    </div>
+             </div>
+		</div>
+		<!--  <div class="layui-footer">
+			底部固定区域
+			© xiaoxinzhou
+		</div>  -->
+	</div>
+	</div>
+	<script src="/js/jquery-3.3.1.min.js"></script>
+	<script src="/layui/layui.js" charset="utf-8"></script>
+	<!-- <script src="/soulTable.js" charset="utf-8"></script> -->
+	<!-- <script src="/layui/ext/tableFilter.js" charset="utf-8"></script>
+	<script src="/layui/ext/excel.js" charset="utf-8"></script>
+	<script src="/layui/ext/tableChild.js" charset="utf-8"></script>
+	<script src="/layui/ext/tableMerge.js" charset="utf-8"></script> -->
+    
+	<script src="/js/xxjs.js"></script>
+	 
+</body>
+</html>

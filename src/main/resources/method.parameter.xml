@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<parameters>
+<!-- id参数唯一标识；name参数名称；mark：0必传1根据条件传2根据需求传;description参数描述；type参数类型：value参数值 ;affectContent影响内容value,value，根据value是否在影响内容中，判断参数是否存在;-->
+	<parameter id="" name="applicationId" mark="0" description="应用编号：第三方应用接入唯一编号，由后台设置" type="String" value=""/>
+	<parameter id="" name="merchantId" mark="0" description="应用商户编号：应用商户唯一编号，请按照商户规则使用正确的商户号" type="String" value=""/>
+	<parameter id="" name="merOrderNum" mark="0" description="商户订单号：由商户端（应用端）生成，如：00000100005115 (不大于64位长度)， 不许有重复。" type="String" value=""/>
+	<parameter id="" name="hisOrderNum" mark="1" description="HIS订单号：作为his订单的唯一标识，方便对账" type="String" value=""/>
+	<parameter id="" name="" mark="0" description="" type="String" value=""/>
+	<parameter id="" name="" mark="0" description="" type="String" value=""/>
+	<parameter id="" name="" mark="0" description="" type="String" value=""/>
+	<parameter id="" name="" mark="0" description="" type="String" value=""/>
+	<parameter id="" name="" mark="0" description="" type="String" value=""/>
+	<parameter id="" name="" mark="0" description="" type="String" value=""/>
+	<parameter id="" name="" mark="0" description="" type="String" value=""/>
+	<parameter id="" name="" mark="0" description="" type="String" value=""/>
+	<parameter id="" name="" mark="0" description="" type="String" value=""/>
+	<parameter id="" name="" mark="0" description="" type="String" value=""/>
+	<parameter id="" name="" mark="0" description="" type="String" value=""/>
+	<parameter id="" name="" mark="0" description="" type="String" value=""/>
+	<parameter id="" name="" mark="0" description="" type="String" value=""/>
+	<parameter id="" name="" mark="0" description="" type="String" value=""/>
+	<parameter id="" name="" mark="0" description="" type="String" value=""/>
+	<parameter id="" name="" description="" type="String" value=""/>
+	<parameter id="" name="" description="" type="String" value=""/>
+	<parameter id="" name="" description="" type="String" value=""/>
+	<parameter id="" name="" description="" type="String" value=""/>
+	<parameter id="" name="" description="" type="String" value=""/>
+	<parameter id="" name="" description="" type="String" value=""/>
+	<parameter id="" name="" description="" type="String" value=""/>
+	<parameter id=""  affectContent="" name="" description="" type="String" value=""/>
+	<parameter id=""  affectContent="" name="" description="" type="String" value=""/>
+	<parameter id=""  affectContent="" name="" description="" type="String" value=""/>
+	<parameter id=""  affectContent="" name="" description="" type="String" value=""/>
+	<parameter id=""  affectContent="" name="" description="" type="String" value=""/>
+	<parameter id=""  affectContent="" name="" description="" type="String" value=""/>
+	<parameter id=""  affectContent="" name="" description="" type="String" value=""/>
+	<parameter id=""  affectContent="" name="" description="" type="String" value=""/>
+	<parameter id=""  affectContent="" name="" description="" type="String" value=""/>
+	<parameter id=""  affectContent="" name="" description="" type="String" value=""/>
+	<parameter id=""  affectContent="" name="" description="" type="String" value=""/>
+	<parameter id=""  affectContent="" name="" description="" type="String" value=""/>
+	<parameter id=""  affectContent="" name="" description="" type="String" value=""/>
+	<parameter id=""  affectContent="" name="" description="" type="String" value=""/>
+	<parameter id=""  affectContent="" name="" description="" type="String" value=""/>
+	<parameter id=""  affectContent="" name="" description="" type="String" value=""/>
+</parameters>

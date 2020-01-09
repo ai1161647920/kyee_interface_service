@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methods>
+	<method id="1">
+		<!-- 方法名称 -->
+		<name></name>
+		<!-- 方法入参 -->
+		<parameterIn></parameterIn>
+		<!-- 方法返参 -->
+		<parameterOut></parameterOut>
+		<!-- 方法描述 -->
+		<description></description>
+	</method>
+
+	<method id="2">
+		<name></name>
+		<parameterIn></parameterIn>
+		<parameterOut></parameterOut>
+		<description></description>
+	</method>
+	
+	<method id="3">
+		<name></name>
+		<parameterIn></parameterIn>
+		<parameterOut></parameterOut>
+		<description></description>
+	</method>
+</methods>

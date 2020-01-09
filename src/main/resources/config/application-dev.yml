@@ -1,0 +1,41 @@
+server:
+  port: 8999
+  #设置请求最大长度20M
+  max-http-header-size: 200000000
+ 
+spring:
+  datasource:
+    #driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/kyee_interface_service?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC&allowMultiQueries=true
+    username: root
+    password: root
+        #数据库连接池配置
+    maxActive: 100
+    minIdle: 5
+    initialSize: 5
+    testOnBorrow: false
+    testOnReturn: false
+    testWhileIdle: true
+    validationQuery: select 1
+        #每1分钟收集空闲连接，单位毫秒
+    timeBetweenEvictionRunsMillis: 60000
+        #连接的最大空闲时间，单位毫秒，5分钟
+    minEvictableIdleTimeMillis: 300000
+    maxWait: 60000
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+
+
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  #开启驼峰命名规则
+  configuration:
+    map-underscore-to-camel-case: true
+  #type-aliases-package: com.kyee.iips.pay.bean
+ 
+#showSql
+logging:
+  level:
+    com:
+      example:
+        mapper : debug

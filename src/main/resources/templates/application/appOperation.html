@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>请求全局参数设置</title>
+
+</head>
+<body>
+
+	<div class="setting-body overflow-auto">
+
+
+		<form class="layui-form layui-form-pane" th:id="form+${appid}" th:lay-filter="formFilter+${appid}"
+			 th:if = "${appSetting.size()} > 0">
+			<div class="layui-form-item" th:each="setting : ${appSetting}" th:classappend="${setting.paramType == 'textarea'}?'layui-form-text'">
+				<label class="layui-form-label lable-form" th:classappend="${setting.paramType != 'textarea'}?' my-lable-form'" th:text="${setting.paramName}"></label>
+				<div class = "layui-input-block"  th:classappend="${setting.paramType != 'textarea'}?' my-input-block'" >
+					<input type="text" th:name="${setting.id}" autocomplete="off"
+						th:placeholder="${setting.description}" class="layui-input" th:value="${setting.paramValue}"  th:if="${setting.paramType}=='text'">
+					<input type="text" th:name="${setting.id}" id="date" lay-verify="date"
+						placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input" th:if="${setting.paramType}=='date'">
+					
+					<input type="radio" th:name="${setting.id}" value="true" title="开启" th:checked="${setting.paramValue =='true'}" th:if="${setting.paramType}=='radio'">
+      				<input type="radio" th:name="${setting.id}" value="false" title="关闭" th:checked="${setting.paramValue =='false' }" th:if="${setting.paramType}=='radio'">
+					<textarea th:placeholder="${setting.description}" th:name="${setting.id}" class="layui-textarea" th:text="${setting.paramValue}" th:if="${setting.paramType}=='textarea'"></textarea>
+				</div>
+			</div>
+			
+		</form>
+			
+	</div>
+	<div class="layui-footer">
+			<button class="layui-btn save-form layui-btn-sm" th:id ="saveForm+${appid}" >保存</button>
+	</div>
+	<script>
+	 form.render();
+	 var appid = "[[${appid}]]";
+	 var formid = "form" + appid;
+	 var formFilter = "formFilter" + appid;
+	 var saveForm = "saveForm" + appid;
+	 //表单初始值
+	 var formInit = form.val(formFilter);
+	 var formInitJson = JSON.stringify(formInit);
+	 console.log(formInitJson);
+		//保存
+		$('#' + saveForm).click(function() {
+			var dataform = form.val(formFilter);
+			var dataformJson = JSON.stringify(dataform);
+			if(formInitJson==dataformJson) { 
+				layer.msg("未更改无需提交!",{icon:5});
+			}else{
+				 var formData = new FormData();
+					formData.append("paramData", dataformJson);
+				$.ajax({
+					type:"post",
+					url:"/saveAppParam",
+					data:formData,
+					timeout:5000,//超时时间设置， 单位毫秒
+					processData: false,
+					contentType: false,
+					success:function(data){
+						layer.msg("保存成功！",{icon:6});
+						 formInit = form.val(formFilter);
+						 formInitJson = JSON.stringify(formInit);
+					},
+					error: function(err){
+						layer.msg("系统异常,请联系管理员！",{icon:5});
+					}
+				});
+			}					
+		});
+		
+	</script>
+
+</body>
+</html>

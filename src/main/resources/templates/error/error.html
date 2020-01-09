@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>出错啦</title>
+    <link rel="stylesheet" type="text/css" href="/css/common.css"/>
+    <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="type-area outline-border main">
+    <div class="error-msg "><span th:text="${errorMsg}"></span></div>
+    <div class="content-error ">
+    </div>
+</div>
+</body>
+</html>
