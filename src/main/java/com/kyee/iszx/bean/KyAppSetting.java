@@ -21,9 +21,6 @@ public class KyAppSetting implements java.io.Serializable {
     /** 参数类型 */
     private String paramType;
 
-    /** 参数标记，0启用1禁用 */
-    private Integer paramFlag;
-    
     
     /** 参数描述*/
     private String description;
@@ -128,25 +125,6 @@ public class KyAppSetting implements java.io.Serializable {
      */
     public void setParamType(String paramType) {
         this.paramType = paramType;
-    }
-
-    /**
-     * 获取参数标记，0启用1禁用
-     * 
-     * @return 参数标记
-     */
-    public Integer getParamFlag() {
-        return this.paramFlag;
-    }
-
-    /**
-     * 设置参数标记，0启用1禁用
-     * 
-     * @param paramFlag
-     *          参数标记
-     */
-    public void setParamFlag(Integer paramFlag) {
-        this.paramFlag = paramFlag;
     }
 
 	public String getDescription() {

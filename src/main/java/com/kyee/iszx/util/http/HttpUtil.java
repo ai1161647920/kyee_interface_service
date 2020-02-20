@@ -120,14 +120,16 @@ public class HttpUtil implements LogService{
         try {
             // httpClient对象执行post请求,并返回响应参数对象
             httpResponse = httpClient.execute(httpPost);
+            httpResponse.setHeader("Content-type", "text/html;charset=UTF-8");
             // 从响应对象中获取响应内容
             HttpEntity entity = httpResponse.getEntity();
             int statusCode = httpResponse.getStatusLine().getStatusCode();
-            String resp = EntityUtils.toString(entity);
+            String resp = EntityUtils.toString(entity,"UTF-8");
+            logger.info("返回参数：" + resp);
             if(statusCode == 200) {
             	result = Results.newSuccessResult(resp);
             }else {
-            	result = Results.newFailedResult(resp);
+            	result = Results.newFailedResult(statusCode,resp);
             }
         } catch (ClientProtocolException e) {
             e.printStackTrace();

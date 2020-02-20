@@ -136,7 +136,7 @@ public class KyParameter implements java.io.Serializable {
     }
 
     /**
-     * 设置出现要求，0必传；1根据条件传；2根据需要传
+     * 设置出现要求，0必传；1根据条件传；2根据需要传；3符合必传条件
      * 
      * @param mark
      *          出现要求

@@ -22,13 +22,15 @@ public class ItemService implements IItemSevice {
 	private SystemDao systemDao;
 	
 	@Override
-	public Result getItem(String valueItem) {
+	public Result getItem(Map<String, String> map) {
 		String ret = "";
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("dictCode", valueItem);
 		List<SysDictionaryItem> sysDictionaryItems = systemDao.findByCondition(6, map);
 		JSONArray obj = JSONArray.fromObject(sysDictionaryItems);
 		return Results.newSuccessResult(obj,obj.size());
 	}
-
+	@Override
+	public List getItemList(Map<String, String> map) {
+		List<SysDictionaryItem> sysDictionaryItems = systemDao.findByCondition(6, map);
+		return sysDictionaryItems;
+	}
 }

@@ -6,6 +6,9 @@
 
 </head>
 <body>
+<input type="hidden" id th:value = "${appid}">
+<input type="hidden" th:value = "${appid}">
+<input type="hidden" th:value = "${appid}">
 <div  class="interface-content overflow-auto">
 <div  class="interface-head">
  <div class="layui-row interface-head-content">
@@ -14,8 +17,12 @@
     </div>
     <div class="layui-col-xs3" >
       <div class="layui-btn-group" style="float:right !important;">
-	    <button type="button" th:id="request+${appid}+${metid}" value="1" class="layui-btn" onclick="requestFun()">请求</button>
-	    <button type="button" th:id="save+${appid}+${metid}" value="1" class="layui-btn" onclick="saveParam()">保存</button>
+        <a th:href="'javascript:requestFun(\''+${appid}+'\','+${metid}+')'">
+	    <button type="button" th:id="request+${appid}+${metid}" value="1" class="layui-btn">请求</button>
+	    </a>
+	    <a th:href="'javascript:saveParam(\''+${appid}+'\','+${metid}+')'">
+	    <button type="button" th:id="save+${appid}+${metid}" value="1" class="layui-btn">保存</button>
+	    </a>
 	  </div>
     </div>
   </div>
@@ -23,7 +30,7 @@
 
 </div>
 <div class="interface-body">
-<div class="layui-collapse">
+<div class="layui-collapse " style="margin-bottom: 15px !important;">
   <div class="layui-colla-item">
     <h2 class="layui-colla-title">请求入参</h2>
     <div class="layui-colla-content layui-show">
@@ -32,9 +39,11 @@
   </div>
   <div class="layui-colla-item">
     <h2 class="layui-colla-title">请求返参</h2>
-    <div class="layui-colla-content">
-	     <pre th:id = "rsponse+${appid}+${metid}">  
-		</pre>
+    <div class="layui-colla-content layui-show">
+        <div th:id="tool+${appid}+${metid}">
+        	<!-- <button type="button" class="layui-btn layui-btn-primary layui-btn-sm">生成二维码</button> -->
+	    </div>
+	     <pre th:id = "rsponse+${appid}+${metid}"></pre>
     </div>
   </div>
 </div>
@@ -45,7 +54,8 @@
 {{# 
 	var getItem = function() {
 	/*console.log("valueItem:1a" +d.valueItem + ':' +d.id);*/
-    var html = "<select id='select"+ d.id +"' lay-verify='' lay-search='' name='inparams" + [[appid]] + [[metid]]+"' title='"+ d.id +"' lay-filter='selectFilter" + [[appid]] + [[metid]]+"'>";
+console.log("selectFilter" + d.methodId);
+    var html = "<select id='select"+ d.id +"' lay-verify='' lay-search='' name='selectName" + d.methodId+"' title='"+ d.id +"' lay-filter='selectFilter" + d.methodId+"'>";
 	var id = '#select' + d.id;
 	var formData = new FormData();
 	formData.append("valueItem", d.valueItem);
@@ -64,8 +74,6 @@
 		if(itemValue == d.value){
 			html = html + "<option value="+itemValue+" selected>"+jsonData[json].itemName+":"+itemValue+"</option>"; 
 		}else{
-			console.log(jsonData[json].itemValue);
-			
  			html = html + "<option value="+itemValue+">"+jsonData[json].itemName+":"+itemValue+"</option>"; 
 		}
         }
@@ -101,11 +109,11 @@
  var metid = "[[${metid}]]";
  var metAffectContent = "[[${metAffectContent}]]";
  var intabid = "inparams" + appid + metid;
+ var toolid = "tool" + appid + metid;
  var tintabid = "#" + intabid;
  var infilter = "infilter" + appid + metid;
- var selectFilter = "selectFilter" + appid + metid;
+ var selectFilter = "selectFilter" +  metid;
  var templetValue = '#temValue' + appid + metid
- var rsponseid = '#rsponse' + appid + metid
  var trClick = "";
  var url = "/getParamIn?appid="+appid+"&metid="+ metid+"&metAffectContent="+ metAffectContent;
  table.render({
@@ -421,9 +429,13 @@
                   var tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']");
                   tr.css("display", "none");
                 }else{
-                	if(item.mark === 0 || item.mark === 3){//必填字段红色示意
+                	if(item.mark === 0 || item.mark === 3 || item.mark === 4){//必填字段红色示意
                 		var td = that.find(".layui-table-box tbody tr[data-index='" + index + "'] td[data-field='nameEn']");
                 		td.css("color","red");
+                	}
+                	if(item.mark === 1){//根据条件字段绿色示意
+                		var td = that.find(".layui-table-box tbody tr[data-index='" + index + "'] td[data-field='nameEn']");
+                		td.css("color","blue");
                 	}
                 	 if(item.valueItem > 0){//禁止有下拉框的单元格输入
                 		var td = that.find(".layui-table-box tbody tr[data-index='" + index + "'] td[data-field='value']");
@@ -477,12 +489,18 @@ $(document).on("mouseenter",".lineStyle", function () {//文本长度过长悬�
        
     // select下拉框选中触发事件
      form.on('select('+selectFilter+')', function(obj){
-    	     //console.log(obj);
+    	 var appid = "[[${appid}]]";
+    	 var metid = "[[${metid}]]";
+    	 var metAffectContent = "[[${metAffectContent}]]";
+    	 var intabid = "inparams" + appid + metid;
+    	 		/* debugger
+    	 		console.log(obj);
+    	 		console.log(selectFilter); */
              var tableData = table.cache;
              var nameEn = "";
              var jsonData = "";
              for(var tabled in tableData){
-            	 if(tabled == obj.elem.name){
+            	 if(tabled == intabid){
             	 jsonData = tableData[tabled];
             	 for(var json in jsonData){
               		if(jsonData[json].id == obj.elem.title){
@@ -508,82 +526,6 @@ $(document).on("mouseenter",".lineStyle", function () {//文本长度过长悬�
              }
     }); 
     
-    
-    function requestFun(){
-    	var requestId = "#request" + appid + metid;
-        
-    	 if($(requestId)["0"].value != 1){
-    		 console.log($(requestId));
-    		 return;
-    	 }
-    	 $(requestId).val("0");
-    	 $(requestId)[0].innerHTML = "处理中";
-    	 var urlId = "#url" + appid + metid;
-    	 var reqURL = $(urlId).val();
-    	 var tableData = JSON.stringify(table.cache[intabid]);
-    	 var formData = new FormData();
-			formData.append("tableData", tableData);
-			formData.append("reqURL", reqURL);
-			formData.append("appid", appid);
-			//console.log(tableData);
-			//console.log(reqURL);
-    	 $.ajax({
-				type:"post",
-				url:"/useMethod",
-				data:formData,
-				timeout:6000,//超时时间设置， 单位毫秒 
-				processData: false,
-				contentType: false,
-				success:function(data){
-					 $(requestId).val("1");
-			    	 $(requestId)[0].innerHTML = "请求";
-			    	 console.log(data);
-			    	 if(data.success){
-			    		  $(rsponseid).html(JsonFormat(data.data));
-			    	 }else{
-			    		 $(rsponseid).html(data.msg);
-			    	 }
-				},
-				error: function(err){
-					layer.msg("系统异常,请联系管理员！",{icon:5});
-					$(requestId).val("1");
-    	 			$(requestId)[0].innerHTML = "请求";
-				}
-			}); 
-    }
-
-    function saveParam(){
-    	var saveId = "#save" + appid + metid;
-        
-    	 if($(saveId)["0"].value != 1){
-    		 console.log($(saveId));
-    		 return;
-    	 }
-    	 $(saveId).val("0");
-    	 $(saveId)[0].innerHTML = "保存中";
-    	 var tableData = JSON.stringify(table.cache[intabid]);
-    	 var formData = new FormData();
-			formData.append("tableData", tableData);
-			formData.append("appid", appid);
-			console.log(tableData);
-    	 $.ajax({
-				type:"post",
-				url:"/saveParam",
-				data:formData,
-				timeout:6000,//超时时间设置， 单位毫秒 
-				processData: false,
-				contentType: false,
-				success:function(data){
-					 $(saveId).val("1");
-			    	 $(saveId)[0].innerHTML = "保存";
-				},
-				error: function(err){
-					layer.msg("系统异常,请联系管理员！",{icon:5});
-					$(saveId).val("1");
-    	 			$(saveId)[0].innerHTML = "保存";
-				}
-			}); 
-    }
 </script> 
 </body>
 </html>

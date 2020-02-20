@@ -17,6 +17,7 @@ import com.kyee.iszx.base.Result;
 import com.kyee.iszx.base.Results;
 import com.kyee.iszx.bean.KyParameter;
 import com.kyee.iszx.common.AppConstants;
+import com.kyee.iszx.common.PageData;
 import com.kyee.iszx.dao.SystemDao;
 import com.kyee.iszx.service.IAppSettingService;
 import com.kyee.iszx.service.IMethodService;
@@ -56,7 +57,9 @@ public class MethodService implements IMethodService{
 			}
 		}
 		List list = appSettingService.findAppSettingByCondition(appid);
-		
+		if(params == null || params.size() == 0) {
+			return Results.newFailedResult(ErrorCodeEnum.S003);
+		}
 		if(AppConstants.IS_YES.equals(appSettingService.getConfig(AppConstants.AUTO_SIGN,list))) {
 			String privateKey = appSettingService.getConfig(AppConstants.PRIVATE_KEY,list);
 			reqParam.remove("signValue");
@@ -90,6 +93,20 @@ public class MethodService implements IMethodService{
 		
 		//请求综合支付
 		result = HttpUtil.doPost(reqURL, reqParam);
+		if(result.getSuccess()) {
+			String ret = (String) result.getData();
+			if("true".equals(StringUtil.getJsonValue("success", ret))) {
+				try {
+				String htmlCode = StringUtil.getJsonValue("html", ret);
+				if(StringUtil.isNotEmpty(htmlCode)) {
+					PageData.htmlCode = htmlCode;
+					PageData.count = PageData.count + 1;
+				}
+				}catch(Exception e) {
+					//可忽略异常
+				}
+			}
+		}
 		return result;
 	}
 

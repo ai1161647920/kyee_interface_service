@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>支付页面</title>
+ <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+  <script type="text/javascript">
+ 	
+     $(document).ready(function() {
+    	 $.ajax({
+    			type:"post",
+    			url:"/getHtmlCode",
+    			processData: false,
+    			contentType: false,
+    			success:function(data){
+    				console.log(data);
+    				$("#payDiv").html(data.data);
+    			},
+    			error: function(err){
+    				console.log("获取页面数据失败,请联系管理员！");
+    			}
+    		}); 
+    	 //console.log("页面参数：" + htmlCode);
+    	 /* htmlCode = htmlCode.replace(/&lt;/g, "<");
+		 htmlCode = htmlCode.replace(/&gt;/g, ">");
+		 htmlCode = htmlCode.replace(/&quot;/g, "\"");
+    	 debugger; */
+    	// $("#payDiv").html();
+     });
+ </script>
+</head>
+<body>
+<div id="payDiv"></div>
+</body>
+</html>

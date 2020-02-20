@@ -3,6 +3,7 @@ package com.kyee.iszx.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,57 +45,28 @@ public class ParameterService implements IParameterService {
 				}
 			}
 		}
-		for (KyParameter param : params) {
-			if (param.getMark() == 0 || param.getMark() == 2 || StringUtil.isEmpty(param.getAffectContent())) {
-				param.setHide(false);
-			} else {
-
-				if (StringUtil.isNotEmpty(metAffectContentValue)
-						&& StringUtil.contains(param.getAffectContent(), metAffectContentValue, ",")) {
-					param.setHide(false);
-					param.setMark(3);
-				} else {
-					param.setHide(true);
-				}
-			}
-		}
+		paramDeal(params , metAffectContentValue);
 
 		JSONArray obj = JSONArray.fromObject(params);
 		// System.out.println(obj.toString());
-		String test = "[{\"affectContent\":\"\",\"attribute\":0,\"description\":\"\",\"hide\":true,\"id\":0,\"mark\":0,\"methodId\":0,\"nameCn\":\"测试\",\"nameEn\":\"\",\"otherClaim\":\"\",\"type\":0,\"value\":\"\",\"valueItem\":0},{\"affectContent\":\"\",\"attribute\":0,\"description\":\"\",\"hide\":true,\"id\":0,\"mark\":0,\"methodId\":0,\"nameCn\":\"测试1\",\"nameEn\":\"\",\"otherClaim\":\"\",\"type\":0,\"value\":\"\",\"valueItem\":0},{\"affectContent\":\"\",\"attribute\":0,\"description\":\"\",\"hide\":false,\"id\":0,\"mark\":0,\"methodId\":0,\"nameCn\":\"测试2\",\"nameEn\":\"\",\"otherClaim\":\"\",\"type\":0,\"value\":\"\",\"valueItem\":0},{\"affectContent\":\"\",\"attribute\":0,\"description\":\"\",\"hide\":false,\"id\":0,\"mark\":0,\"methodId\":0,\"nameCn\":\"测试3\",\"nameEn\":\"\",\"otherClaim\":\"\",\"type\":0,\"value\":\"\",\"valueItem\":0}]";
-		if ("1".equals(metid)) {
-			ret = "{\"code\":0,\"msg\":\"\",\"count\":" + params.size() + ",\"data\":" + obj.toString() + "}";
-		} else {
-			ret = "{\"code\":0,\"msg\":\"\",\"count\":100,\"data\":" + test + "}";
-		}
+//		String test = "[{\"affectContent\":\"\",\"attribute\":0,\"description\":\"\",\"hide\":true,\"id\":0,\"mark\":0,\"methodId\":0,\"nameCn\":\"测试\",\"nameEn\":\"\",\"otherClaim\":\"\",\"type\":0,\"value\":\"\",\"valueItem\":0},{\"affectContent\":\"\",\"attribute\":0,\"description\":\"\",\"hide\":true,\"id\":0,\"mark\":0,\"methodId\":0,\"nameCn\":\"测试1\",\"nameEn\":\"\",\"otherClaim\":\"\",\"type\":0,\"value\":\"\",\"valueItem\":0},{\"affectContent\":\"\",\"attribute\":0,\"description\":\"\",\"hide\":false,\"id\":0,\"mark\":0,\"methodId\":0,\"nameCn\":\"测试2\",\"nameEn\":\"\",\"otherClaim\":\"\",\"type\":0,\"value\":\"\",\"valueItem\":0},{\"affectContent\":\"\",\"attribute\":0,\"description\":\"\",\"hide\":false,\"id\":0,\"mark\":0,\"methodId\":0,\"nameCn\":\"测试3\",\"nameEn\":\"\",\"otherClaim\":\"\",\"type\":0,\"value\":\"\",\"valueItem\":0}]";
+//		if ("1".equals(metid)) {
+//			ret = "{\"code\":0,\"msg\":\"\",\"count\":" + params.size() + ",\"data\":" + obj.toString() + "}";
+//		} else {
+//			ret = "{\"code\":0,\"msg\":\"\",\"count\":100,\"data\":" + test + "}";
+//		}
 		
 		return Results.newSuccessResult(obj,params.size());
 	}
 
 	@Override
-	public Result upDateParameterIn(String metAffectContent, String metAffectValue, String tableData) {
+	public Result upDateParameterIn(String metAffectValue, String tableData) {
 		//更新参数信息
 		tableData = StringUtil.deleteSpace(tableData);
 		String ret = "";
 		List<KyParameter> params = gson.fromJson(tableData, new TypeToken<List<KyParameter>>() {
 		}.getType());
-		for (KyParameter param : params) {
-			if (param.getMark() == 0 || param.getMark() == 2 || StringUtil.isEmpty(param.getAffectContent())) {
-				param.setHide(false);
-			} else {
-
-				if (StringUtil.isNotEmpty(metAffectValue)
-						&& StringUtil.contains(param.getAffectContent(), metAffectValue, ",")) {
-					param.setHide(false);
-					param.setMark(3);
-				} else {
-					if (param.getMark() == 3) {
-						param.setMark(1);
-					}
-					param.setHide(true);
-				}
-			}
-		}
+		paramDeal(params , metAffectValue);
 		JSONArray obj = JSONArray.fromObject(params);
 		ret = "{\"code\":0,\"msg\":\"\",\"count\":" + params.size() + ",\"data\":" + obj.toString() + "}";
 		return Results.newSuccessResult(obj,params.size());
@@ -124,6 +96,40 @@ public class ParameterService implements IParameterService {
 		}catch(Exception e){
 			logger.error("保存参数值出错：" + e);
 			return false;
+		}
+	}
+	
+	public static void paramDeal(List<KyParameter> params ,String metAffectContentValue) {
+		if(params.size() == 0 || StringUtil.isEmpty(metAffectContentValue)) {
+			return;
+		}
+		for (KyParameter param : params) {
+			if(StringUtil.isNotEmpty(metAffectContentValue)) {
+				if(StringUtil.isNotEmpty(param.getAffectContent())) {
+					int flag = param.getMark();
+					if (StringUtil.contains(param.getAffectContent(), metAffectContentValue, ",")) {
+						param.setHide(false);
+						if(flag < 3) {
+							flag = flag + 3;
+							param.setMark(flag);
+						}
+					} else if(Pattern.matches(param.getAffectContent(), metAffectContentValue)){//正则匹配校验
+						param.setHide(false);
+						if(flag < 3) {
+							flag = flag + 3;
+							param.setMark(flag);
+						}
+					}else {
+						if (flag > 2) {
+							flag = flag - 3;
+							param.setMark(flag);
+						}
+						param.setHide(true);
+					}
+					continue;
+				}
+			}
+			param.setHide(false);
 		}
 	}
 }

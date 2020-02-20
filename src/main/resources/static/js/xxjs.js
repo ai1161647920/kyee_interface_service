@@ -6,7 +6,8 @@
   }).extend({
     index: 'lib/index' //主入口模块
   }).use('index');*/
-  
+
+var timeOut = 80*1000;
 var layer = '';
 var element = '';
 var table = '';
@@ -71,7 +72,7 @@ function tabChange(title,appId,methodId){
 				type:"post",
 				url:"/method.opt",
 				data:formData,
-				timeout:5000,//超时时间设置， 单位毫秒
+				timeout:timeOut,//超时时间设置， 单位毫秒
 				processData: false,
 				contentType: false,
 				success:function(data){
@@ -102,7 +103,7 @@ function appSetting(title,appId){
 				type:"post",
 				url:"/app.opt",
 				data:formData,
-				timeout:5000,//超时时间设置， 单位毫秒
+				timeout:timeOut,//超时时间设置， 单位毫秒
 				processData: false,
 				contentType: false,
 				success:function(data){
@@ -163,6 +164,7 @@ function  promptMsg(msg,outTime){
 //json数据格式化
 function JsonFormat(json) {
 	if (typeof json == 'string') {
+		console.log("String");
 		json = $.parseJSON(json);
 	}
 	json = JSON.stringify(json, undefined, 2);
@@ -181,6 +183,178 @@ function JsonFormat(json) {
 			 	} else if (/null/.test(match)) {
 			 		cls = 'null';
 			 	}
+			 	match = match.replace(/</g, "&lt;");
+			 	match = match.replace(/>/g, "&gt;");
+			 	match = match.replace(/\\\"/g, "\"");
 			 	return '<span class="' + cls + '">' + match + '</span>';
 		 });
 }
+
+
+function requestFun(appid,metid){
+	var requestId = "#request" + appid + metid;
+	var intabid = "inparams" + appid + metid;
+	var rsponseid = '#rsponse' + appid + metid
+	var toolid = "#tool"  + appid + metid;
+	var textid = "text"  + appid + metid;
+	var getTextid = "#text"  + appid + metid;
+	var payType = "";
+	 if($(requestId)["0"].value != 1){
+		 console.log($(requestId));
+		 return;
+	 }
+	 console.log($(requestId));
+	 console.log(rsponseid);
+	 $(requestId).val("0");
+	 $(requestId)[0].innerHTML = "处理中";
+	 var htmlCon = "<i class='layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop ' style='font-size: 30px; color: #1E9FFF;'></i>";
+	 $(rsponseid).css("text-align","center");
+	 $(rsponseid).html(htmlCon);
+	 $(toolid).html("");
+	 var urlId = "#url" + appid + metid;
+	 var reqURL = $(urlId).val();
+	 var jsonDataReq = table.cache[intabid];
+	 var tableData = JSON.stringify(jsonDataReq);
+	 for(var i =0;i<jsonDataReq.length;i++){
+			var nameEn = jsonDataReq[i].nameEn;
+			if("payType" == nameEn){
+				payType = jsonDataReq[i].value;
+			}
+		}
+	 var formData = new FormData();
+		formData.append("tableData", tableData);
+		formData.append("reqURL", reqURL);
+		formData.append("appid", appid);
+		/*console.log(tableData);
+		console.log(reqURL);
+		console.log(appid);*/
+	 var ajaxReq = $.ajax({
+			type:"post",
+			url:"/useMethod",
+			data:formData,
+			timeout:timeOut,//超时时间设置， 单位毫秒 
+			processData: false,
+			contentType: false,
+			success:function(data){
+		    	 if(data.success){
+		    		  var dataJson = $.parseJSON(data.data);
+		    		  console.log(dataJson);
+		    		  for(var key in dataJson){  
+						if(key == "codeUrl"){
+							console.log(dataJson[key]);
+							var toolCode = '<button type="button" class="layui-btn layui-btn-primary layui-btn-sm" onclick = "getQRCode(\''+dataJson[key]+'\',\''+payType+'\')">生成二维码</button>'
+							$(toolid).html(toolCode);
+							break;
+						}else if(key == "html"){
+							var urlPath = window.document.location.href; 
+							urlPath = urlPath + "/payPage";
+							var toolCode = '';
+							    toolCode = toolCode + '<div class="layui-row interface-head-content">';
+							    toolCode = toolCode + '<div class="layui-col-xs12">';
+							    
+							    toolCode = toolCode +      '<button type="button" class="layui-btn layui-btn-primary layui-btn-sm"  onclick = "openHtml()">打开支付页面</button>';
+							    toolCode = toolCode +      '<button type="button" class="layui-btn layui-btn-primary layui-btn-sm"  onclick = "getQRCode(\'payPage\',\'page\')">局域网扫码访问</button>';
+							    toolCode = toolCode +    '</div>';
+							    toolCode = toolCode +  '</div>';
+							    $(toolid).html(toolCode);
+							break;
+						}
+		    			}
+		    		  $(rsponseid).css("text-align","left");
+		    		  var showData = JsonFormat(data.data);
+		    		  $(rsponseid).html(showData);
+		    	 }else{
+		    		 $(rsponseid).html(data.msg + "参考信息：" + data.code);
+		    	 }
+			},
+			complete : function(XMLHttpRequest,status){ //请求完成后最终执行参数
+				console.log(status);
+			　　　　if(status=='timeout'){//超时,status还有success,error等值的情况
+			 　　　　　 ajaxReq.abort(); //取消请求
+			  		  $(rsponseid).html("请求超时！");
+			　　　　}else if(status=='success'){
+					
+			　　　　}else{
+						layer.msg("系统异常,请联系管理员！",{icon:5});
+						$(rsponseid).html("系统异常！");
+			　　　　}
+					$(requestId).val("1");
+		 			$(requestId)[0].innerHTML = "请求";
+			　　}
+		}); 
+}
+
+function openHtml(){
+	window.open("/payPage"); 
+}
+
+function getQRCode(text,payType){
+	var formData = new FormData();
+	formData.append("text", text);
+	formData.append("payType", payType);
+	$.ajax({
+		type:"post",
+		url:"/qrcode.show",
+		data:formData,
+		timeout:timeOut,//超时时间设置， 单位毫秒 
+		processData: false,
+		contentType: false,
+		success:function(data){
+			layer.alert(data, {
+				  btn:0,
+				  title: false, //不显示标题
+				})
+		},
+		error: function(err){
+			layer.msg("获取二维码异常,请联系管理员！",{icon:5});
+		}
+	}); 
+}
+
+function saveParam(appid,metid){
+	var saveId = "#save" + appid + metid;
+	var intabid = "inparams" + appid + metid;
+	 if($(saveId)["0"].value != 1){
+		 console.log($(saveId));
+		 return;
+	 }
+	 $(saveId).val("0");
+	 $(saveId)[0].innerHTML = "保存中";
+	 var tableData = JSON.stringify(table.cache[intabid]);
+	 var formData = new FormData();
+		formData.append("tableData", tableData);
+		formData.append("appid", appid);
+	 $.ajax({
+			type:"post",
+			url:"/saveParam",
+			data:formData,
+			timeout:timeOut,//超时时间设置， 单位毫秒 
+			processData: false,
+			contentType: false,
+			success:function(data){
+				 $(saveId).val("1");
+		    	 $(saveId)[0].innerHTML = "保存";
+		    	 layer.msg("保存成功！",{icon:6});
+			},
+			error: function(err){
+				layer.msg("系统异常,请联系管理员！",{icon:5});
+				$(saveId).val("1");
+	 			$(saveId)[0].innerHTML = "保存";
+			}
+		}); 
+}
+
+
+function encodeHtml(con){
+    return con.replace(
+        /"|&|'|<|>|[\x00-\x20]|[\x7F-\xFF]|[\u0100-\u2700]/g,
+        function($0){
+            var c = $0.charCodeAt(0);
+            switch(c){
+            case 13: return "<br />";
+            case 32: return "&#160;";
+            default: return "&#"+c+";";
+            }
+        }
+    );
+};

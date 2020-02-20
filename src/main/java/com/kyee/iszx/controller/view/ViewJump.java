@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,11 +17,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.kyee.iszx.bean.KyAppSetting;
 import com.kyee.iszx.bean.KyApplication;
 import com.kyee.iszx.bean.KyMethod;
+import com.kyee.iszx.bean.SysDictionaryItem;
 import com.kyee.iszx.common.AppConstants;
+import com.kyee.iszx.common.PageData;
 import com.kyee.iszx.service.IAppSettingService;
+import com.kyee.iszx.service.IItemSevice;
 import com.kyee.iszx.service.IKyApplicationService;
 import com.kyee.iszx.service.IMethodService;
 import com.kyee.iszx.util.log.LogService;
+import com.kyee.iszx.util.string.StringUtil;
 
 
 
@@ -34,20 +40,16 @@ public class ViewJump implements LogService{
 	 private IKyApplicationService kyApplicationService;
 	@Autowired
 	 private IAppSettingService appSettingService;
-	
-@RequestMapping("/index")
+	@Autowired
+	 private IItemSevice itemSevice;
+	 
+@RequestMapping("/")
 public String index(Model model) {
 	List<KyApplication> kyApp = kyApplicationService.findAllApp();
 	List<KyMethod> kymethod = methodService.findAllMethod();
 	model.addAttribute("kyApp",kyApp);
 	model.addAttribute("kymethod",kymethod);
     return "/index";
-}
-
-@RequestMapping("/index1")
-public String index1(Model model) {
-	System.out.println("index1");
-    return "/index1";
 }
 
 
@@ -77,6 +79,37 @@ public String appOpt(Model model,@RequestParam("appid") String appid) {
 	List<KyAppSetting> appSetting = appSettingService.findAppSettingByCondition(appid);
 	model.addAttribute("appSetting",appSetting);
     return "/application/appOperation";
+}
+
+@RequestMapping("/qrcode.show")
+public String qrcodeShow(Model model,@RequestParam("text") String text,@RequestParam("payType") String payType) {
+	String msg = "未知支付方式";
+	if("page".equals(payType)) {
+		List list = appSettingService.findAppSettingByCondition("1");
+		String url = appSettingService.getConfig(AppConstants.SERVICE_URL,list);
+		text = url + "/payPage";
+		msg = "局域网扫码打开支付页面";
+	}else {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("dictCode", "1");
+		map.put("itemValue", payType);
+	List<SysDictionaryItem> sysDictionaryItems = itemSevice.getItemList(map);
+	if(sysDictionaryItems != null && sysDictionaryItems.size() >0) {
+		for(SysDictionaryItem item : sysDictionaryItems) {
+			if(StringUtil.isNotEmpty(payType) && payType.equals(item.getItemValue())) {
+				msg = item.getItemName();
+			}
+		}
+	}
+	}
+	model.addAttribute("msg",msg);
+	model.addAttribute("text",text);
+    return "/qrcode/qrcode";
+}
+
+@RequestMapping("/payPage")
+public String payPage() {
+    return "/payPage/payPage";
 }
 
 }

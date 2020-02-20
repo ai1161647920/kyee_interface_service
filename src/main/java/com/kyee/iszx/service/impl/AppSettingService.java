@@ -34,7 +34,6 @@ public class AppSettingService implements IAppSettingService{
 	public List findAppSettingByCondition(String appid) {
 		Map appFind = new HashMap();
 		appFind.put("appId", appid);
-		appFind.put("paramFlag", "0");
 		List<KyAppSetting> appSetting = findAppSettingByCondition(appFind);
 		return systemDao.findByCondition(7,appFind);
 	}

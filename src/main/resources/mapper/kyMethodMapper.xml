@@ -32,13 +32,14 @@
         SELECT
         <include refid="allColumns" />
         FROM ky_method kyMethod
+        WHERE kyMethod.use_flag = 1
     </select>
     
     <!-- 根据条件参数查询数据列表 -->
     <select id="findKyMethodByCondition" resultMap="kyMethodMap" parameterType="map">
         SELECT
         <include refid="allColumns" />
-        FROM ky_method kyMethod WHERE 1 = 1
+        FROM ky_method kyMethod WHERE 1 = 1 AND kyMethod.use_flag = 1
         <if test="appId != null">
             AND kyMethod.app_id = #{appId}
         </if>
@@ -50,6 +51,9 @@
         </if>
         <if test="accessMethod != null">
             AND kyMethod.access_method = #{accessMethod}
+        </if>
+        <if test="useFlag != null">
+            AND kyMethod.use_flag = #{useFlag}
         </if>
         <if test="nameCn != null and nameCn != ''">
             AND kyMethod.name_cn LIKE CONCAT('%', #{nameCn}, '%')
@@ -72,7 +76,7 @@
     <select id="findKyMethodByIds" resultMap="kyMethodMap" parameterType="list">
         SELECT
         <include refid="allColumns" />
-        FROM ky_method kyMethod WHERE kyMethod.id IN
+        FROM ky_method kyMethod WHERE kyMethod.use_flag = 1 AND kyMethod.id IN
         <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
             #{id}
         </foreach>

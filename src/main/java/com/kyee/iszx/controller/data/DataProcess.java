@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kyee.iszx.base.Result;
 import com.kyee.iszx.base.Results;
+import com.kyee.iszx.common.PageData;
 import com.kyee.iszx.service.IAppSettingService;
 import com.kyee.iszx.service.IItemSevice;
 import com.kyee.iszx.service.IMethodService;
@@ -19,7 +20,7 @@ import com.kyee.iszx.util.log.LogService;
 
 @RestController
 public class DataProcess implements LogService{
-
+	
 	@Autowired
 	private IMethodService methodService;
 	
@@ -56,12 +57,14 @@ public class DataProcess implements LogService{
 	@RequestMapping("/upDateData")
 	public Result upDateData(@RequestParam String metAffectContent, @RequestParam String metAffectValue,
 			@RequestParam String tableData) {
-		return parameterService.upDateParameterIn(metAffectContent,metAffectValue,tableData);
+		return parameterService.upDateParameterIn(metAffectValue,tableData);
 	}
 
 	@RequestMapping("/getItem")
 	public Result getItem(@RequestParam(required = false) String valueItem) {
-		return itemSevice.getItem(valueItem);
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("dictCode", valueItem);
+		return itemSevice.getItem(map);
 	}
 
 	@RequestMapping("/useMethod")
@@ -78,26 +81,11 @@ public class DataProcess implements LogService{
 		return Results.newFailedResult("保存信息出错！");
 	}
 	
-	@RequestMapping("/test")
-	public Result test() {
-		String ret = "";
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("test", "123");
-		paramMap.put("test1", "1233");
-		paramMap.put("test2", "12343");
-		paramMap.put("privateKey",
-				"MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAPupORdqoiZrdkwUlwjcrVjlvgbVCJsznugvQXIdx2yVNTrSJOZUMF2ALOUqEwEVG/V126JVF+aBJ4y52oiCfqGicSPqsvxeQ1iErKnu1KKMQ9flw9EIvb2LUicLtcG8ah6cfj4elij7XWk1QDpXyPy9KMBZ0G10sHHWs+mTgRTNAgMBAAECgYBWMD2STH3eJJ2uLrsPWOyxbnVnR5yb8tDwegay+4nqISvKyl/C1oB99UDq9z7s9vrNVSD0dqop0n/mDVzPtcmCCg/ue4lV3kj4rCDWVCc1Ooyjcu1JKCruOgrCdL72EwUeriBtXs+alGmU0KMrzpvUnSpKb6rcwMkwcvpsCii8TQJBAP/FVxmY4Z9HZz2GJuudHyokwTUUnCFJ198G5ttLhLAo0m5wCSKo8Aw8k0MZHwB9pHbHPrEjHatu+T9Re1jthXsCQQD74vCxlCyz7xPQKSoAv0JOLKlQmy1nycb7D8O5jUdY7t9PYbDS8kg0wgprvLuJNaj+KU3PKu3FGtCJ2PJSkKhXAkBKw4+bTuIc4g1eoZk85DfY5NeJQZYF8QTmD6lpzuBhcf1ZBOzWsdVBbm+JfI1gYlmx0roTo3UnyI+ZH6NTslKDAkBdD5JnuVvuupSyYpL/JaqEoWGIw1w6LUVTupZQdo72n4JnnKsstJDS1SHufhM3dVjTVkVGFhE0slx7oWid8o4PAkEAr9L1uUWyhXbcVo50dHC9e2OiDSmUPVZvzVj2AKJU1dz3lI+ZLLLdzCgdRNngT5CPz8DRttXCGLjiQ52P4g3atQ==");
-		logger.info("test info测试日志：" + paramMap);
-		logger.error("test error测试日志：" + paramMap);
-		logger.debug("test debug测试日志：" + paramMap);
-		//ret = HttpUtil.doPost("http://localhost:8080/qy_iips_pay/tool/sign/sign", paramMap);
-		
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("methodId", "1");
-		map.put("attribute", "0");
-		//List<KyParameter> params = systemDao.findByCondition(3, map);
-
-		return Results.newSuccessResult("ss");
+	@RequestMapping("/getHtmlCode")
+	public Result getHtmlCode() {
+		logger.info("当前数据统计次数：" + PageData.count);
+		return Results.newSuccessResult(PageData.htmlCode);
 	}
+	
 
 }

@@ -30,6 +30,11 @@ public class AppConstants {
 	public static final String IIPS_URL = "IIPS_URL";
 	
 	/**
+	 * @描述: Service局域网地址
+	 */
+	public static final String SERVICE_URL = "SERVICE_URL";
+	
+	/**
 	 * @描述: 签名所需公钥
 	 */
 	public static final String PRIVATE_KEY = "PRIVATE_KEY";
